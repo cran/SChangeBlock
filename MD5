@@ -1,4 +1,4 @@
-01ddc48543d51592b161ca051be4495d *DESCRIPTION
+ffe3470e81ff7fdecc68ed70f09a6080 *DESCRIPTION
 76b9c812de9b884ad8ab22c02f5b750c *NAMESPACE
 5364279eb4b3779575c8d81c9aaab797 *R/Graphics.R
 26208561736d26ea922ab810eebe08e7 *R/RcppExports.R
@@ -29,14 +29,14 @@ ee0e3c33bc4c4e9bca7cafe4f03d5862 *man/plot.RandomField.Rd
 c84dbc5b35830f95dbfaacce21612911 *man/rmix.Rd
 e67860ee7e9e5716a6a67ed8354d0207 *man/sOpt.Rd
 253d2d2ae1a909329982f3ea1e570741 *src/GMD.cpp
-c2f6e19cfddcc3cc41a1616967f5e417 *src/Mu.cpp
+d6b8dcffa8d80c93ccc1279282aa0f23 *src/Mu.cpp
 f887d289da3a44529a5033adf877b70a *src/RcppExports.cpp
 97fdf3bafd10f9915347e5f59103df59 *src/autocov.cpp
 7f391813b03b25c107e4efedfa689eb9 *src/dependency.cpp
 22cd0e009e919e699325a789b9ee3b60 *src/sOpt.cpp
 0ef73a6a860162318e65d50a0a933c85 *tests/testthat.R
 f514439b66ab77a94e2932986f17e1d8 *tests/testthat/test-GMD.R
-8542b8197b6ecf0951f458b999ae5164 *tests/testthat/test-Mu.R
+0520ed79410d536dfc221aab8a168f6f *tests/testthat/test-Mu.R
 bb0b1a5030590a78a41a76cdb3b049cd *tests/testthat/test-autocov.R
 57ceeb03488eab8f9c8077b174e72d8f *tests/testthat/test-block_pValue.R
 afb01631ad02df7f020ff20a979e7491 *tests/testthat/test-block_stat.R

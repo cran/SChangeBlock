@@ -73,7 +73,7 @@ NumericVector Mu(RObject x, Rcpp::Nullable<Rcpp::RObject> group = R_NilValue,
     if(l_n <= 0 || l_m <= 0) stop("Only positive values allowed for l");
   }
   
-  if(is<NumericVector>(x))
+  if(is<NumericVector>(x) || is<IntegerVector>(x))
   {
     if(Rf_isMatrix(x))
     {
@@ -102,6 +102,9 @@ NumericVector Mu(RObject x, Rcpp::Nullable<Rcpp::RObject> group = R_NilValue,
         l_m = 1;
       } 
     }
+  } else
+  {
+    stop("x is in the wrong format");
   }
   
   // start with taking the means
@@ -112,8 +115,8 @@ NumericVector Mu(RObject x, Rcpp::Nullable<Rcpp::RObject> group = R_NilValue,
     
     int i, j;  
     
-    double ngroups = max(Group);
-    
+    int ngroups = max(Group);
+
     MuVec = NumericVector(ngroups);
     IntegerVector ln(ngroups);
     
@@ -151,17 +154,17 @@ NumericVector Mu(RObject x, Rcpp::Nullable<Rcpp::RObject> group = R_NilValue,
     {
       for(j = 0; j < b_m; j++)
       {
-        MuVec(i * b_m + j) = 0;
+        MuVec(j * b_n + i) = 0;
         
         for(i2 = i * l_n; i2 < (i + 1) * l_n; i2++)
         {
           for(j2 = j * l_m; j2 < (j + 1) * l_m; j2++)
           {
-            MuVec(i * b_m + j) += X(i2, j2);
+            MuVec(j * b_n + i) += X(i2, j2);
           }
         }
         
-        MuVec(i * b_m + j) /= blocklength;
+        MuVec(j * b_n + i) /= blocklength;
       }
     }
   } else
