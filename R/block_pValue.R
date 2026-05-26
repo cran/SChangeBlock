@@ -11,7 +11,7 @@
 #' @importFrom nortest ad.test
 block_pValue <- function(tn, fun = "gmd")
 {
-  if(fun == "gmd" | fun == "var") return(1 - pnorm(tn))
+  if(fun == "gmd" | fun == "var" | fun == "varWithoutCentering") return(1 - pnorm(tn))
   else if(fun == "jb") return(1 - pchisq(tn, 2))
   else if(fun == "grubbs") ## Grubbs: no real p-value
     return(as.numeric(tn < crit.grubbs(attr(tn, "n"), 0.05))) ### 0.05 ????

@@ -43,9 +43,10 @@ The function returns a matrix of dimension \code{n} that has the \code{\link{cla
 Generate random fields on a regular grid. Dependency can be modeled to some extend.
 }
 \details{
-The dependent random field is generated as follows:
-Denote with \eqn{(e_{ij})} the error matrix from which the random field \eqn{(Y_{ij})}
-(under the hypothesis, i.e. without any location shift) is generated.
+Set \code{dim(X)} \eqn{= (n, m)} and \eqn{N = nm}. The dependent random field follows the equation:
+\deqn{Y_{ij} = \sum_{k = -q}^q \sum_{l = -q}^q \theta_{kl} \varepsilon_{i+k, j+l} + \frac{H}{\sqrt{N}} \mathbb{1}_{\{(i, j) \in \mathbb{A}\}}}
+where \eqn{\mathbb{A} = \{(i, j) \in \{1, ..., n\} \times \{1, ..., m\} | \text{ change region at } (i, j)\}}.
+Only for \code{type = 3L} the term \eqn{\mathbb{1}_{\{(i, j) \in \mathbb{A}\}}} is replaced by \eqn{\frac{H}{\sqrt{N}} \frac{j}{m - 1}}.
 }
 \examples{
 genField(c(50, 50))

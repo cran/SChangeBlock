@@ -42,19 +42,34 @@
 #' # GMD test statistic, scaling variance estimated by the mad
 #' block_stat(X, 0.6, fun = "var", varEstim = mad)
 #'
+#' @importFrom methods is
 #' @export
 block_stat <- function(x, s, fun = "gmd", varEstim = var)
 {
   if(is.vector(x) | is.ts(x)) n <- length(x) else n <- dim(x)
   
   if(missing(s)) s <- sOpt(n, 0.6)
+
+  if(length(s) == 1 || length(s) == length(n))
+  {
+    # CAREFUL: bn is the product of all dimensions, but ln is still a vector since
+    # it is needed for the ANOVA
+    ln <- round(n^s)
+    bn <- prod(floor(n / ln))
+    m <- Mu(x, l = ln)
+  } else if( ((is(x, "vector") && is(s, "vector")) && length(x) == length(s)) || 
+             (length(dim(x)) == length(dim(s)) && all(dim(x) == dim(s))) )
+  {
+    if(length(grep("var", fun)) < 1) stop("Individual block sizes only possible for 'var'")
+    ln <- table(s)
+    bn <- length(ln)
+    attributes(ln) <- NULL
+    m <- Mu(x, group = s)
+  } else
+  {
+    stop("no valid option for s")
+  }
   
-  # CAREFUL: bn is the product of all dimensions, but ln is still a vector since
-  # it is needed for the ANOVA
-  ln <- round(n^s)
-  bn <- prod(floor(n / ln))
-  
-  m <- Mu(x, l = ln)
   if(is.function(varEstim))
   {
     sigma_x <- varEstim(as.vector(x))
@@ -62,6 +77,7 @@ block_stat <- function(x, s, fun = "gmd", varEstim = var)
   } else
   {
     sigma_x <- varEstim
+    ### ????
     sigma_mu <- varEstim / prod(ln)
   }
   
@@ -76,7 +92,12 @@ block_stat <- function(x, s, fun = "gmd", varEstim = var)
     # variance
     # res <- (var(m * sqrt(prod(ln))) * (bn - 1) / sqrt(bn)) / (sigma_x * sqrt(2)) - (bn - 1) / sqrt(2 * bn)
     kappa <- 2#mean((m * sqrt(prod(ln)))^4) - 1
-    res <- (prod(ln) / sigma_x * (sum(m^2) - bn * mean(m)^2) - bn + 1) / sqrt(kappa * bn)
+    if(length(ln) == length(m)) nu <- ln * m^2 else nu <- prod(ln) * m^2
+    res <- (1 / sigma_x * (sum(nu) - prod(n) * mean(m)^2) - bn + 1) / sqrt(kappa * bn)
+  } else if(fun == "varWithoutCentering")
+  {
+    if(length(ln) == length(m)) nu <- ln * m^2 else nu <- prod(ln) * m^2
+    res <- (sum(nu) - bn * sigma_x) / (sigma_x * sqrt(2 * bn))
   } else if(fun == "jb")
   {
     # Jarque-Bera

@@ -27,7 +27,7 @@ GMD <- function(x) {
 #'        Overwrites `l` if specified.
 #' @param l block length. Integer vector of length 1 or 2, depending on the number of dimensions of X, with strictly positive entries.
 #' 
-#' @return A numeric vector of length \code{floor(n[1] / l[1]) * floor(n[2] / l[2])}.
+#' @return A numeric vector of length \code{floor(n[1] / l[1]) * floor(n[2] / l[2])}, \code{n = dim(x)}.
 #' 
 #' @examples 
 #' X <- genField(c(50, 100), H = 100, type = 2)
@@ -102,13 +102,13 @@ autocov <- function(X, b, M = as.integer( c(1, 1)), direction = 0L, type = 0L) {
 #' specific type of spatial MA(q) model.
 #' 
 #' @param q model order (integer).
-#' @param param MA parameter (numeric value between 0 and 1).
+#' @param param parameter (numeric value between -1 and 1).
 #' @param structure Character string, either "MA" or "AR" indicating the structure of the dependency matrix. Details below.
 #' 
 #' @return A matrix of size (2q + 1) x (2q + 1).
 #' 
 #' @details Symmetric spatial MA(q) model (or an approximation to a spatial AR(1) model) for 2-dim. random fields:
-#'          \deqn{Y_{ij} = \sum_{k = -q}^q \sum_{l = -q}^q \theta_{kl} \varepsilon_{kl}.}
+#'          \deqn{Y_{ij} = \sum_{k = -q}^q \sum_{l = -q}^q \theta_{kl} \varepsilon_{i+k, j+l}.}
 #'          \eqn{(\theta_{kl}) = \Theta}. \cr \cr
 #'          For "MA": \deqn{\theta_{kl} = \code{param}^{|k - q - 1| + |l - q - 1|}.}
 #'          For "AR": \deqn{\theta_{kl} = \tilde{\theta}_{kl} / \sqrt{\sum_{|k| \leq q} \sum_{|l| \leq q} \tilde{\theta}^2_{kl}} 

@@ -1,3 +1,15 @@
+SP <- function(X, lag = 1)
+{
+  n <- nrow(X)
+  m <- ncol(X)
+  
+  rho1 <- abs(mean(sapply(1:m, function(i) cor(X[1:(n-lag), i], X[-c(1:lag), i], method = "spearman"))))
+  rho2 <- abs(mean(sapply(1:n, function(i) cor(X[i, 1:(m-lag)], X[i, -c(1:lag)], method = "spearman"))))
+  
+  c(rho1 = rho1, rho2 = rho2)
+}
+
+
 #'Bandwidth estimation 
 #'
 #'Calculate MSE-optimal bandwidths according to Andrews (1991).
@@ -56,12 +68,11 @@ bandwidth <- function(X, p1 = 0.3, p2 = 0.3, lag = 1)
     # 
     # rho1 <- abs(median(Res1))
     # rho2 <- abs(median(Res2))
+    
+    rho <- SP(X, lag = lag)
 
-    rho1 <- abs(mean(sapply(1:n, function(i) cor(X[i, 1:(m-lag)], X[i, -c(1:lag)], method = "spearman"))))
-    rho2 <- abs(mean(sapply(1:m, function(i) cor(X[1:(n-lag), i], X[-c(1:lag), i], method = "spearman"))))
-
-    param1 <- min(max(round(m^(p1) * ((2 * rho1) / (1 - rho1^2))^(p2)), 0), m-1)
-    param2 <- min(max(round(n^(p1) * ((2 * rho2) / (1 - rho2^2))^(p2)), 0), n-1)
+    param1 <- min(max(round(m^(p1) * ((2 * rho[1]) / (1 - rho[1]^2))^(p2)), 0), m-1)
+    param2 <- min(max(round(n^(p1) * ((2 * rho[2]) / (1 - rho[2]^2))^(p2)), 0), n-1)
     
     if(is.na(param1)) param1 <- 1
     if(is.na(param2)) param2 <- 1
@@ -87,7 +98,8 @@ bandwidth <- function(X, p1 = 0.3, p2 = 0.3, lag = 1)
 #'             (Up to which lag should the autocovariances be estimated?) Lags must be smaller than the dimensions of X.
 #' @param method 1L: square root of the matrix via [robcp::modifChol()], inversion via [solve()] \cr
 #'               2L: square root and inversion via singular value decomposition \cr
-#'               3L: square root via [expm::sqrtm()], inversion via [solve()]
+#'               3L: square root via [expm::sqrtm()], inversion via [solve()] \cr
+#'               Otherwise, a custom function for the square root and the inversion can be supplied via \code{method}. This function must take exactly one argument, which is the matrix \code{X}.
 #' @param separable if the autocovariance function is (assumed to be) separable in the two directions of X, 
 #'                  those two autocovariances can be estimated separately and then combined (after square root and inversion) as a Kronecker product.
 #' @param M numeric vector containing two integer values, only needed for \code{type = 1}, see [autocov()].
@@ -115,6 +127,11 @@ bandwidth <- function(X, p1 = 0.3, p2 = 0.3, lag = 1)
 #' 
 #' X <- genField(c(20, 20), Theta = genTheta(1, 0.4))
 #' Y <- decorr(X, c(2, 2))
+#' 
+#' \donttest{
+#' # custom function:
+#' require(robcp)
+#' Y2 <- decorr(X, c(2, 2), method = function(x) modifChol(solve(x))) }
 #' 
 #'
 #' @importFrom robcp modifChol
@@ -156,7 +173,6 @@ decorr <- function(X, lags, method = 1L, separable = FALSE, M = 1, type = 0)
     A.invsqrt <- kronecker(invsqrt(A1, method), invsqrt(A2, method))
   } else 
   {
-    # browser()
     A <- autocov(X, lags, M = M, type = type)
     A.invsqrt <- invsqrt(A, method)
   }
@@ -180,7 +196,10 @@ decorr <- function(X, lags, method = 1L, separable = FALSE, M = 1, type = 0)
 
 invsqrt <- function(M, method = 1L)
 {
-  if(method == 1L)
+  if(is.function(method))
+  {
+    return(method(M))
+  } else if(method == 1L)
   {
     Mchol <- tryCatch(chol(M), error = function(e) e)
     if("error" %in% class(Mchol))
@@ -203,7 +222,7 @@ invsqrt <- function(M, method = 1L)
       Mchol <- sqrtm(M)
     }
     return(solve(Mchol))
-  }
+  } else 
   {
     stop("Wrong method")
   }

@@ -14,7 +14,8 @@ decorr(X, lags, method = 1L, separable = FALSE, M = 1, type = 0)
 
 \item{method}{1L: square root of the matrix via \code{\link[robcp:modifChol]{robcp::modifChol()}}, inversion via \code{\link[=solve]{solve()}} \cr
 2L: square root and inversion via singular value decomposition \cr
-3L: square root via \code{\link[expm:sqrtm]{expm::sqrtm()}}, inversion via \code{\link[=solve]{solve()}}}
+3L: square root via \code{\link[expm:sqrtm]{expm::sqrtm()}}, inversion via \code{\link[=solve]{solve()}} \cr
+Otherwise, a custom function for the square root and the inversion can be supplied via \code{method}. This function must take exactly one argument, which is the matrix \code{X}.}
 
 \item{separable}{if the autocovariance function is (assumed to be) separable in the two directions of X,
 those two autocovariances can be estimated separately and then combined (after square root and inversion) as a Kronecker product.}
@@ -48,6 +49,11 @@ par(oldpar) }
 
 X <- genField(c(20, 20), Theta = genTheta(1, 0.4))
 Y <- decorr(X, c(2, 2))
+
+\donttest{
+# custom function:
+require(robcp)
+Y2 <- decorr(X, c(2, 2), method = function(x) modifChol(solve(x))) }
 
 
 }

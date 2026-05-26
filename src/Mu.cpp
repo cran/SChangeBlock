@@ -36,7 +36,7 @@ using namespace Rcpp;
 //'        Overwrites `l` if specified.
 //' @param l block length. Integer vector of length 1 or 2, depending on the number of dimensions of X, with strictly positive entries.
 //' 
-//' @return A numeric vector of length \code{floor(n[1] / l[1]) * floor(n[2] / l[2])}.
+//' @return A numeric vector of length \code{floor(n[1] / l[1]) * floor(n[2] / l[2])}, \code{n = dim(x)}.
 //' 
 //' @examples 
 //' X <- genField(c(50, 100), H = 100, type = 2)

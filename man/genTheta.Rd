@@ -9,7 +9,7 @@ genTheta(q, param, structure = "MA")
 \arguments{
 \item{q}{model order (integer).}
 
-\item{param}{MA parameter (numeric value between 0 and 1).}
+\item{param}{parameter (numeric value between -1 and 1).}
 
 \item{structure}{Character string, either "MA" or "AR" indicating the structure of the dependency matrix. Details below.}
 }
@@ -22,7 +22,7 @@ specific type of spatial MA(q) model.
 }
 \details{
 Symmetric spatial MA(q) model (or an approximation to a spatial AR(1) model) for 2-dim. random fields:
-\deqn{Y_{ij} = \sum_{k = -q}^q \sum_{l = -q}^q \theta_{kl} \varepsilon_{kl}.}
+\deqn{Y_{ij} = \sum_{k = -q}^q \sum_{l = -q}^q \theta_{kl} \varepsilon_{i+k, j+l}.}
 \eqn{(\theta_{kl}) = \Theta}. \cr \cr
 For "MA": \deqn{\theta_{kl} = \code{param}^{|k - q - 1| + |l - q - 1|}.}
 For "AR": \deqn{\theta_{kl} = \tilde{\theta}_{kl} / \sqrt{\sum_{|k| \leq q} \sum_{|l| \leq q} \tilde{\theta}^2_{kl}} 

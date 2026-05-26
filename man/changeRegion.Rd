@@ -30,9 +30,9 @@ Change region types:
 \item "1c": size of the shift region is one block, but the shift region lies in four blocks
 \item 2L: exactly half of the data is shifted
 \item 3L: there is a steady increase from left to right
-\item 4L:
+\item 4L: shift is at \eqn{\{X_{ij} | (i \leq \frac{n}{2} \wedge \frac{m}{4} < j \leq \frac{m}{2}) \vee (\frac{n}{4} < i \leq \frac{n}{2} \wedge j \leq \frac{m}{4})\}}
 \item 5L: for demonstration purposes: the field is divided into 10 "columns". Every other column is shifted
-\item 6L:
+\item 6L: shift is at \eqn{\{X_{ij} | i \leq j \leq m\}} (upper triangle)
 \item 7L: a "circle" including everything within \code{distFun} \code{delta} from \code{middle} is shifted
 }
 }

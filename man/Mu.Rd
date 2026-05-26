@@ -15,7 +15,7 @@ Overwrites \code{l} if specified.}
 \item{l}{block length. Integer vector of length 1 or 2, depending on the number of dimensions of X, with strictly positive entries.}
 }
 \value{
-A numeric vector of length \code{floor(n[1] / l[1]) * floor(n[2] / l[2])}.
+A numeric vector of length \code{floor(n[1] / l[1]) * floor(n[2] / l[2])}, \code{n = dim(x)}.
 }
 \description{
 This function returns a vector of the block means for a given random field X.

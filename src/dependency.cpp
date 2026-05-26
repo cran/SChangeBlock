@@ -1,19 +1,27 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
+double powNeg(double base, double exponent)
+{
+  int sign;
+  if(base < 0) sign = -1; else if(base == 0) sign = 0; else sign = 1;
+  
+  return sign * pow(fabs(base), exponent);
+}
+
 //' Dependency Matrix Theta
 //' 
 //' This function generates a symmetric dependency matrix \eqn{\Theta} of a 
 //' specific type of spatial MA(q) model.
 //' 
 //' @param q model order (integer).
-//' @param param MA parameter (numeric value between 0 and 1).
+//' @param param parameter (numeric value between -1 and 1).
 //' @param structure Character string, either "MA" or "AR" indicating the structure of the dependency matrix. Details below.
 //' 
 //' @return A matrix of size (2q + 1) x (2q + 1).
 //' 
 //' @details Symmetric spatial MA(q) model (or an approximation to a spatial AR(1) model) for 2-dim. random fields:
-//'          \deqn{Y_{ij} = \sum_{k = -q}^q \sum_{l = -q}^q \theta_{kl} \varepsilon_{kl}.}
+//'          \deqn{Y_{ij} = \sum_{k = -q}^q \sum_{l = -q}^q \theta_{kl} \varepsilon_{i+k, j+l}.}
 //'          \eqn{(\theta_{kl}) = \Theta}. \cr \cr
 //'          For "MA": \deqn{\theta_{kl} = \code{param}^{|k - q - 1| + |l - q - 1|}.}
 //'          For "AR": \deqn{\theta_{kl} = \tilde{\theta}_{kl} / \sqrt{\sum_{|k| \leq q} \sum_{|l| \leq q} \tilde{\theta}^2_{kl}} 
@@ -37,7 +45,7 @@ NumericMatrix genTheta(int q, NumericVector param, String structure = "MA")
  
  for(int i = 0; i < param.length(); i++)
  {
-   if(param[i] < 0 || param[i] > 1) stop("all values of param have to be between 0 and 1");
+   if(param[i] < -1 || param[i] > 1) stop("all values of param have to be between -1 and 1");
  }
  
  int p = 2 * q + 1;
@@ -79,7 +87,7 @@ NumericMatrix genTheta(int q, NumericVector param, String structure = "MA")
      {
        for(j = 0; j < p; j++)
        {
-         Theta(i, j) = pow(param(0), sqrt(pow(i - q, 2) + pow(j - q, 2)));
+         Theta(i, j) = powNeg(param(0), sqrt(pow(i - q, 2) + pow(j - q, 2)));
          sumTheta += pow(Theta(i, j), 2);
        }
      }
